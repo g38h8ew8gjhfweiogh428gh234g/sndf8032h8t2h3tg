@@ -111,12 +111,12 @@
     function handleHuman() {
       const msgEl = document.getElementById("message");
       if (targetKey && links[targetKey]) {
-        msgEl.textContent = "Redirecting...";
+        msgEl.textContent = "Loading...";
         // short delay so spinner visible for a moment
         setTimeout(()=> { window.location.replace(links[targetKey]); }, 250);
       } else {
         if (fallbackHumanRedirect) {
-          msgEl.textContent = "Redirecting...";
+          msgEl.textContent = "Loading...";
           setTimeout(()=> { window.location.replace(fallbackHumanRedirect); }, 300);
         } else {
           msgEl.textContent = "Shortlink not found.";
@@ -132,3 +132,4 @@
   </script>
 </body>
 </html>
+
