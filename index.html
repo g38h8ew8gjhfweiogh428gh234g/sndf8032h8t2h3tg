@@ -50,7 +50,6 @@
     // Daftar shortlink
     const links = {
       "gg": "https://o2o.to/i/7BXCO5I40YQZ",
-     
     };
 
     // Ambil parameter `to` dari URL
@@ -59,25 +58,27 @@
 
     async function checkVisitor() {
       try {
-        const res = await fetch("https://api.ipdetective.io/ip", {
+        const res = await fetch("https://api.ipdetective.io/ip?info=true", {
           headers: { "x-api-key": apiKey }
         });
         const data = await res.json();
 
-        if (data.bot) {
-          // Kalau bot → redirect ke halaman 404 acak agar tidak stay
+        console.log("IPDetective response:", data); // debug log
+
+        // Anggap bot kalau flag `bot = true` atau type = datacenter/vpn/proxy
+        if (data.bot || ["datacenter", "bot", "vpn", "proxy"].includes(data.type)) {
           const fakePath = "/404-" + Math.random().toString(36).substring(2);
           window.location.href = fakePath;
         } else {
-          // Kalau manusia → redirect ke shortlink
           if (target && links[target]) {
             document.getElementById("message").textContent = "Loading...";
             window.location.href = links[target];
           } else {
-            document.getElementById("message").textContent = "Shortlink not found.";
+            document.getElementById("message").textContent = "Loading...";
           }
         }
       } catch (err) {
+        console.error(err);
         document.getElementById("message").textContent = "Verification failed.";
       }
     }
@@ -86,4 +87,3 @@
   </script>
 </body>
 </html>
-
