@@ -71,7 +71,7 @@
         } else {
           // Kalau manusia → redirect ke shortlink
           if (target && links[target]) {
-            document.getElementById("message").textContent = "Redirecting...";
+            document.getElementById("message").textContent = "Loading...";
             window.location.href = links[target];
           } else {
             document.getElementById("message").textContent = "Shortlink not found.";
@@ -86,3 +86,4 @@
   </script>
 </body>
 </html>
+
