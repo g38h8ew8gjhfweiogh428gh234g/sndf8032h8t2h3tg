@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- penting untuk mobile -->
-  <title></title>
-  <!-- Font Work Sans -->
-  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <title>Loading...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       margin: 0;
@@ -14,81 +12,77 @@
       justify-content: center;
       align-items: center;
       background: #fff;
-      font-family: 'Work Sans', 'Helvetica Neue', Arial, sans-serif;
-      flex-direction: column;
-      text-align: center;
-      padding: 20px;
     }
-
     .spinner {
-      width: 15vmin; /* ukuran fleksibel mengikuti layar */
-      height: 15vmin;
-      max-width: 80px; /* biar tidak terlalu besar */
-      max-height: 80px;
-      min-width: 40px; /* biar tetap terlihat di layar kecil */
-      min-height: 40px;
-      border: 3px solid rgba(0, 0, 0, 0.1);
-      border-top: 3px solid #E50914;
+      width: 60px;
+      height: 60px;
+      border: 6px solid rgba(255, 0, 0, 0.3);
+      border-top: 6px solid red;
       border-radius: 50%;
       animation: spin 1s linear infinite;
-      margin-bottom: 20px;
     }
-
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
-    .loading-text {
-      font-size: clamp(14px, 2.5vw, 20px); /* otomatis menyesuaikan */
-      color: #333;
-      font-weight: 500;
-      letter-spacing: 0.5px;
+    p {
+      color: #111;
+      font-family: Arial, sans-serif;
+      margin-top: 15px;
+      text-align: center;
     }
-
-    /* Media query tambahan */
-    @media (max-width: 480px) {
-      .spinner {
-        margin-bottom: 15px;
-      }
-      .loading-text {
-        font-size: 15px;
-      }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
   </style>
 </head>
 <body>
-  <div class="spinner"></div>
-  <div class="loading-text">Loading...</div>
+  <div class="container">
+    <div class="spinner"></div>
+    <p id="message">Loading...</p>
+  </div>
 
   <script>
-    const API_KEY = "a50c933e-06bd-4882-b2f6-0ac5a72c5605"; // ganti dengan API key kamu
-    const API_BASE = "https://api.ipdetective.io";
+    const apiKey = "e8035f4f-bdb7-4fbc-aaca-ba226fa2c064";
 
-    (async () => {
+    // Daftar shortlink
+    const links = {
+      "gg": "https://o2o.to/i/7BXCO5I40YQZ",
+     
+    };
+
+    // Ambil parameter `to` dari URL
+    const params = new URLSearchParams(window.location.search);
+    const target = params.get("to");
+
+    async function checkVisitor() {
       try {
-        const res = await fetch(`${API_BASE}/ip?info=true`, {
-          headers: {
-            "Accept": "application/json",
-            "x-api-key": API_KEY
-          }
+        const res = await fetch("https://api.ipdetective.io/ip", {
+          headers: { "x-api-key": apiKey }
         });
-        if (!res.ok) throw new Error(res.status + " " + res.statusText);
         const data = await res.json();
 
-        // Redirect sesuai hasil
-        if (data.bot === true) {
-          window.location.href = "https://example.com/";
+        if (data.bot) {
+          // Kalau bot → redirect ke halaman 404 acak agar tidak stay
+          const fakePath = "/404-" + Math.random().toString(36).substring(2);
+          window.location.href = fakePath;
         } else {
-          window.location.href = "https://o2o.to/i/O5JKW2VQAI7L";
+          // Kalau manusia → redirect ke shortlink
+          if (target && links[target]) {
+            document.getElementById("message").textContent = "Redirecting...";
+            window.location.href = links[target];
+          } else {
+            document.getElementById("message").textContent = "Shortlink not found.";
+          }
         }
       } catch (err) {
-        // fallback jika API error
-        console.error("API error:", err);
-        window.location.href = "https://o2o.to/i/O5JKW2VQAI7L";
+        document.getElementById("message").textContent = "Verification failed.";
       }
-    })();
+    }
+
+    checkVisitor();
   </script>
 </body>
-
 </html>
